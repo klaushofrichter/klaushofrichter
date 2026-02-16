@@ -8,13 +8,13 @@ const OUTPUT_PATH = join(__dirname, '..', 'src', 'assets', 'apps.json')
 const USERNAME = 'klaushofrichter'
 
 function gh(endpoint) {
-  const result = execSync(`gh api '${endpoint}'`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
+  const result = execSync(`gh api '${endpoint}' 2>/dev/null`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
   return JSON.parse(result)
 }
 
 function ghRaw(endpoint, extraArgs = '') {
   try {
-    return execSync(`gh api '${endpoint}' ${extraArgs}`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
+    return execSync(`gh api '${endpoint}' ${extraArgs} 2>/dev/null`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
   } catch {
     return null
   }

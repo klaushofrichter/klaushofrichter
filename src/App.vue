@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import type { AppsData, AppEntry } from './types/app'
 import appsData from './assets/apps.json'
 import AppHeader from './components/AppHeader.vue'
