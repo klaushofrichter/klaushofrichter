@@ -18,6 +18,6 @@ defineProps<{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--spacing-md);
-  padding-bottom: var(--spacing-lg);
+  padding: 4px 4px var(--spacing-lg) 4px;
 }
 </style>
