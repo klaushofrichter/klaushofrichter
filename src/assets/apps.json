@@ -10,14 +10,6 @@
   },
   "apps": [
     {
-      "name": "klaushofrichter",
-      "pagesUrl": "https://klaushofrichter.github.io/klaushofrichter/",
-      "repoUrl": "https://github.com/klaushofrichter/klaushofrichter",
-      "lastUpdated": "2026-02-16T22:08:10Z",
-      "version": "1.0.0",
-      "summary": "Software engineering executive based in the USA, with a background in cloud infrastructure, DevOps, and video platform development. Originally from Germany, Klaus holds a Master's Degree in Electronics Engineering from Technische Universität Berlin and relocated to the U.S. in 1999. He has held VP-level engineering roles at Eagle Eye Networks,..."
-    },
-    {
       "name": "een-oauth-proxy",
       "pagesUrl": "https://klaushofrichter.github.io/een-oauth-proxy/",
       "repoUrl": "https://github.com/klaushofrichter/een-oauth-proxy",
@@ -88,14 +80,6 @@
       "lastUpdated": "2025-06-22T18:43:41Z",
       "version": "1.4.24",
       "summary": "A Vue 3 web application for viewing a SwiftSensors account and its sensors. This is intended as a technology demonstration. The application runs on desktop browsers, tablet and mobile. The application was build with Cursor (Claude-3.7-Sonnet) on MacOS 15.4 and Windows 11. The application is using the SwiftSensors public API,..."
-    },
-    {
-      "name": "een-capture",
-      "pagesUrl": "https://klaushofrichter.github.io/een-capture/",
-      "repoUrl": "https://github.com/klaushofrichter/een-capture",
-      "lastUpdated": "2025-05-31T16:11:55Z",
-      "version": "0.1.47",
-      "summary": "IT HAS MOVED TO THIS PLACE"
     },
     {
       "name": "een-preview",
