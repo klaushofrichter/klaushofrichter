@@ -97,6 +97,13 @@ async function main() {
   for (const repo of pagesRepos) {
     console.log(`  Processing ${repo.name}...`)
 
+    // Skip repos with .nobrowse file
+    const nobrowse = ghRaw(`/repos/${USERNAME}/${repo.name}/contents/.nobrowse`)
+    if (nobrowse !== null) {
+      console.log(`    Skipped (has .nobrowse)`)
+      continue
+    }
+
     // Fetch version from package.json
     let version = null
     try {

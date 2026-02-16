@@ -10,6 +10,14 @@
   },
   "apps": [
     {
+      "name": "klaushofrichter",
+      "pagesUrl": "https://klaushofrichter.github.io/klaushofrichter/",
+      "repoUrl": "https://github.com/klaushofrichter/klaushofrichter",
+      "lastUpdated": "2026-02-16T22:08:10Z",
+      "version": "1.0.0",
+      "summary": "Software engineering executive based in the USA, with a background in cloud infrastructure, DevOps, and video platform development. Originally from Germany, Klaus holds a Master's Degree in Electronics Engineering from Technische Universität Berlin and relocated to the U.S. in 1999. He has held VP-level engineering roles at Eagle Eye Networks,..."
+    },
+    {
       "name": "een-oauth-proxy",
       "pagesUrl": "https://klaushofrichter.github.io/een-oauth-proxy/",
       "repoUrl": "https://github.com/klaushofrichter/een-oauth-proxy",
@@ -96,14 +104,6 @@
       "lastUpdated": "2025-03-09T20:23:27Z",
       "version": "0.0.0",
       "summary": "A simple Vue3 application that allows users to enter an access token and camera identifier to display a preview image from the Eagle Eye Networks service."
-    },
-    {
-      "name": "klaushofrichter",
-      "pagesUrl": "https://klaushofrichter.github.io/klaushofrichter/",
-      "repoUrl": "https://github.com/klaushofrichter/klaushofrichter",
-      "lastUpdated": "2025-03-09T19:27:37Z",
-      "version": null,
-      "summary": "An experimental Deployment"
     }
   ]
 }
