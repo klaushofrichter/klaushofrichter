@@ -14,6 +14,19 @@
   --spacing-lg: 24px;
 }
 
+.dark {
+  --color-bg: #0d1117;
+  --color-text: #e6edf3;
+  --color-text-muted: #8b949e;
+  --color-link: #58a6ff;
+  --color-card: #161b22;
+  --color-border: #30363d;
+  --color-badge-bg: #1f3a5f;
+  --color-badge-text: #58a6ff;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
 *,
 *::before,
 *::after {

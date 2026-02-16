@@ -4,13 +4,20 @@ import type { UserProfile } from '../types/app'
 defineProps<{
   user: UserProfile
   appCount: number
+  showDetails: boolean
+  darkMode: boolean
+}>()
+
+const emit = defineEmits<{
+  'update:showDetails': [value: boolean]
+  'toggle-dark': []
 }>()
 </script>
 
 <template>
   <header class="app-header">
     <div class="user-info">
-      <img :src="user.avatarUrl" :alt="user.name" class="avatar" />
+      <img :src="user.avatarUrl" :alt="user.name" class="avatar" @click="emit('toggle-dark')" />
       <div class="user-details">
         <h1>GitHub Pages Apps</h1>
         <p class="user-meta">
@@ -20,6 +27,9 @@ defineProps<{
         <p v-if="user.bio" class="bio">{{ user.bio }}</p>
         <p class="stats">
           <span>{{ appCount }} apps deployed</span>
+          <button class="details-toggle" :class="{ active: showDetails }" @click="emit('update:showDetails', !showDetails)">
+            Details {{ showDetails ? 'on' : 'off' }}
+          </button>
         </p>
       </div>
     </div>
@@ -43,6 +53,12 @@ defineProps<{
   width: 64px;
   height: 64px;
   border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.avatar:hover {
+  opacity: 0.8;
 }
 
 .user-details h1 {
@@ -92,5 +108,26 @@ defineProps<{
 
 .separator {
   margin: 0 6px;
+}
+
+.details-toggle {
+  margin-left: 12px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.details-toggle:hover {
+  background: var(--color-badge-bg);
+}
+
+.details-toggle.active {
+  background: var(--color-badge-bg);
+  color: var(--color-badge-text);
 }
 </style>

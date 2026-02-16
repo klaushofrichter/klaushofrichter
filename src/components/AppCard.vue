@@ -3,6 +3,11 @@ import type { AppEntry } from '../types/app'
 
 const props = defineProps<{
   app: AppEntry
+  showDetails: boolean
+}>()
+
+const emit = defineEmits<{
+  'show-lightbox': [app: AppEntry]
 }>()
 
 function openApp(url: string) {
@@ -28,7 +33,7 @@ function relativeDate(dateStr: string): string {
 </script>
 
 <template>
-  <article class="app-card" @click="openApp(app.pagesUrl)">
+  <article class="app-card" @click="showDetails ? openApp(app.pagesUrl) : emit('show-lightbox', app)">
     <div class="card-content">
       <div class="card-header">
         <h2>
@@ -36,7 +41,7 @@ function relativeDate(dateStr: string): string {
         </h2>
         <span v-if="app.version" class="version-badge">v{{ app.version }}</span>
       </div>
-      <p class="summary">{{ app.summary }}</p>
+      <p v-if="showDetails" class="summary">{{ app.summary }}</p>
       <div class="card-footer">
         <span class="date" data-testid="date">Updated {{ relativeDate(app.lastUpdated) }}</span>
         <a :href="app.repoUrl" target="_blank" rel="noopener" class="repo-link" @click.stop>
