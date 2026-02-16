@@ -32,9 +32,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npm run build -- --mode production
-        env:
-          NODE_ENV: production
+      - name: Type check and build
+        run: npx vue-tsc -b && npx vite build
 
       - uses: actions/upload-pages-artifact@v3
         with:
