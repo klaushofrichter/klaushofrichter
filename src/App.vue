@@ -16,8 +16,7 @@ const data = appsData as AppsData
 
 <style scoped>
 .container {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-lg);
 }
 </style>
