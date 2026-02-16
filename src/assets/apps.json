@@ -1,0 +1,109 @@
+{
+  "user": {
+    "login": "klaushofrichter",
+    "name": "Klaus Hofrichter",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/14897086?v=4",
+    "htmlUrl": "https://github.com/klaushofrichter",
+    "bio": null,
+    "blog": "http://klaushofrichter.net",
+    "publicRepos": 38
+  },
+  "apps": [
+    {
+      "name": "een-oauth-proxy",
+      "pagesUrl": "https://klaushofrichter.github.io/een-oauth-proxy/",
+      "repoUrl": "https://github.com/klaushofrichter/een-oauth-proxy",
+      "lastUpdated": "2026-02-15T20:43:33Z",
+      "version": "1.1.0",
+      "summary": "A standalone OAuth proxy system for Eagle Eye Networks (EEN) consisting of three independent applications."
+    },
+    {
+      "name": "een-video-events",
+      "pagesUrl": "https://klaushofrichter.github.io/een-video-events/",
+      "repoUrl": "https://github.com/klaushofrichter/een-video-events",
+      "lastUpdated": "2026-02-14T23:03:55Z",
+      "version": "1.0.0",
+      "summary": "A Vue 3 web application for viewing live HD camera video and real-time events from the Eagle Eye Networks (EEN) Video Platform, built with the een-api-toolkit using the een-oauth-proxy."
+    },
+    {
+      "name": "een-observation-app",
+      "pagesUrl": "https://klaushofrichter.github.io/een-observation-app/",
+      "repoUrl": "https://github.com/klaushofrichter/een-observation-app",
+      "lastUpdated": "2026-02-13T23:44:05Z",
+      "version": "1.0.40",
+      "summary": "A Vue 3 single-page application for Eagle Eye Networks camera monitoring with live video streaming, event display, and real-time event push."
+    },
+    {
+      "name": "een-api-demo4",
+      "pagesUrl": "https://klaushofrichter.github.io/een-api-demo4/",
+      "repoUrl": "https://github.com/klaushofrichter/een-api-demo4",
+      "lastUpdated": "2026-01-03T20:53:41Z",
+      "version": "0.0.0",
+      "summary": "A Vue 3 web application that demonstrates the een-api-toolkit for accessing the Eagle Eye Networks Video Platform."
+    },
+    {
+      "name": "een-gng",
+      "pagesUrl": "https://klaushofrichter.github.io/een-gng/",
+      "repoUrl": "https://github.com/klaushofrichter/een-gng",
+      "lastUpdated": "2025-07-31T19:53:42Z",
+      "version": "0.2.81",
+      "summary": "A modern Vue 3 application building on top of EEN Login with additional functionality related to Google Firebase. All features of EEN Login are preserved, please refer to the README there for details."
+    },
+    {
+      "name": "een-playground",
+      "pagesUrl": "https://klaushofrichter.github.io/een-playground/",
+      "repoUrl": "https://github.com/klaushofrichter/een-playground",
+      "lastUpdated": "2025-07-30T01:09:09Z",
+      "version": "0.0.47",
+      "summary": "TBD"
+    },
+    {
+      "name": "een-login",
+      "pagesUrl": "https://klaushofrichter.github.io/een-login/",
+      "repoUrl": "https://github.com/klaushofrichter/een-login",
+      "lastUpdated": "2025-07-29T20:25:14Z",
+      "version": "0.1.126",
+      "summary": "A modern Vue 3 application demonstrating secure authentication with Eagle Eye Networks (EEN) services using OAuth2. The application provides two proxy implementations for handling the OAuth flow securely: 1. A Cloudflare Worker implementation for production deployments 2. A built-in Vite plugin proxy for local development without third-party dependencies"
+    },
+    {
+      "name": "mcp-1",
+      "pagesUrl": "https://klaushofrichter.github.io/mcp-1/",
+      "repoUrl": "https://github.com/klaushofrichter/mcp-1",
+      "lastUpdated": "2025-07-27T20:37:45Z",
+      "version": "1.0.0",
+      "summary": "A comprehensive Model Context Protocol (MCP) server that provides Star Trek quotes through resources and tools. Built with the modern MCP SDK v1.13.2, this server demonstrates how to create and deploy MCP resources for AI assistants."
+    },
+    {
+      "name": "SwiftEventWeb",
+      "pagesUrl": "https://klaushofrichter.github.io/SwiftEventWeb/",
+      "repoUrl": "https://github.com/klaushofrichter/SwiftEventWeb",
+      "lastUpdated": "2025-06-22T18:43:41Z",
+      "version": "1.4.24",
+      "summary": "A Vue 3 web application for viewing a SwiftSensors account and its sensors. This is intended as a technology demonstration. The application runs on desktop browsers, tablet and mobile. The application was build with Cursor (Claude-3.7-Sonnet) on MacOS 15.4 and Windows 11. The application is using the SwiftSensors public API,..."
+    },
+    {
+      "name": "een-capture",
+      "pagesUrl": "https://klaushofrichter.github.io/een-capture/",
+      "repoUrl": "https://github.com/klaushofrichter/een-capture",
+      "lastUpdated": "2025-05-31T16:11:55Z",
+      "version": "0.1.47",
+      "summary": "IT HAS MOVED TO THIS PLACE"
+    },
+    {
+      "name": "een-preview",
+      "pagesUrl": "https://klaushofrichter.github.io/een-preview/",
+      "repoUrl": "https://github.com/klaushofrichter/een-preview",
+      "lastUpdated": "2025-03-09T20:23:27Z",
+      "version": "0.0.0",
+      "summary": "A simple Vue3 application that allows users to enter an access token and camera identifier to display a preview image from the Eagle Eye Networks service."
+    },
+    {
+      "name": "klaushofrichter",
+      "pagesUrl": "https://klaushofrichter.github.io/klaushofrichter/",
+      "repoUrl": "https://github.com/klaushofrichter/klaushofrichter",
+      "lastUpdated": "2025-03-09T19:27:37Z",
+      "version": null,
+      "summary": "An experimental Deployment"
+    }
+  ]
+}
