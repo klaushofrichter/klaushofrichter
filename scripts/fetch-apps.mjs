@@ -75,7 +75,7 @@ async function main() {
     avatarUrl: rawUser.avatar_url,
     htmlUrl: rawUser.html_url,
     bio: rawUser.bio,
-    blog: rawUser.blog,
+    blog: rawUser.html_url,
     publicRepos: rawUser.public_repos,
   }
 
