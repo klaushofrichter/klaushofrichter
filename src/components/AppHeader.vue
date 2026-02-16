@@ -20,8 +20,6 @@ defineProps<{
         <p v-if="user.bio" class="bio">{{ user.bio }}</p>
         <p class="stats">
           <span>{{ appCount }} apps deployed</span>
-          <span v-if="user.blog" class="separator">·</span>
-          <a v-if="user.blog" :href="user.blog.startsWith('http') ? user.blog : 'https://' + user.blog" target="_blank" rel="noopener">{{ user.blog }}</a>
         </p>
       </div>
     </div>
