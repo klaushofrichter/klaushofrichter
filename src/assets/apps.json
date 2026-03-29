@@ -6,14 +6,22 @@
     "htmlUrl": "https://github.com/klaushofrichter",
     "bio": null,
     "blog": "https://github.com/klaushofrichter",
-    "publicRepos": 38
+    "publicRepos": 39
   },
   "apps": [
+    {
+      "name": "een-observation-app",
+      "pagesUrl": "https://klaushofrichter.github.io/een-observation-app/",
+      "repoUrl": "https://github.com/klaushofrichter/een-observation-app",
+      "lastUpdated": "2026-03-10T23:43:22Z",
+      "version": "1.0.58",
+      "summary": "A Vue 3 single-page application for Eagle Eye Networks camera monitoring with live video streaming, event display, and real-time event push."
+    },
     {
       "name": "een-oauth-proxy",
       "pagesUrl": "https://klaushofrichter.github.io/een-oauth-proxy/",
       "repoUrl": "https://github.com/klaushofrichter/een-oauth-proxy",
-      "lastUpdated": "2026-02-15T20:43:33Z",
+      "lastUpdated": "2026-02-17T21:43:54Z",
       "version": "1.1.0",
       "summary": "A standalone OAuth proxy system for Eagle Eye Networks (EEN) consisting of three independent applications."
     },
@@ -24,14 +32,6 @@
       "lastUpdated": "2026-02-14T23:03:55Z",
       "version": "1.0.0",
       "summary": "A Vue 3 web application for viewing live HD camera video and real-time events from the Eagle Eye Networks (EEN) Video Platform, built with the een-api-toolkit using the een-oauth-proxy."
-    },
-    {
-      "name": "een-observation-app",
-      "pagesUrl": "https://klaushofrichter.github.io/een-observation-app/",
-      "repoUrl": "https://github.com/klaushofrichter/een-observation-app",
-      "lastUpdated": "2026-02-13T23:44:05Z",
-      "version": "1.0.40",
-      "summary": "A Vue 3 single-page application for Eagle Eye Networks camera monitoring with live video streaming, event display, and real-time event push."
     },
     {
       "name": "een-api-demo4",
