@@ -1,0 +1,62 @@
+version: 2
+
+# Version updates. Note these are only half the story: the security half
+# (Dependabot alerts + security updates) is a repo setting, not config, and
+# both must stay switched on under Settings > Code security.
+#
+# Dependabot opens its PRs against develop, the default branch, and a push to
+# develop is what deploy.yml publishes to Pages - so merging one of these is a
+# deploy. There is no workflow on pull_request in this repo yet, which means
+# these bumps are unchecked until they are already live; the e2e suite under
+# e2e/ is the obvious thing to hang on a PR trigger to close that.
+updates:
+  # Application dependencies.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Chicago
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: deps
+      prefix-development: deps-dev
+    groups:
+      # One PR per group rather than per package: a dozen single-package PRs
+      # would each rebuild and redeploy the site for changes that are reviewed
+      # together anyway.
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      development-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    # Majors stay ungrouped and arrive one at a time - those are the ones that
+    # need reading, not batch-merging.
+
+  # Workflow actions. Without this, action majors are only noticed when a
+  # runtime deprecation warning starts appearing in logs.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Chicago
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns:
+          - "*"
