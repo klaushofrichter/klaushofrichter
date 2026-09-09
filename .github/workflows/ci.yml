@@ -1,0 +1,64 @@
+name: CI
+
+# PRs only. deploy.yml already builds on every push to develop - but it builds
+# and deploys in the same run, so its first opinion on a change arrives after
+# the change is live. This is the same work done while it can still stop a
+# merge, which is what makes Dependabot's bumps worth opening at all.
+#
+# Both branches: Dependabot opens against develop, the default branch, and
+# CLAUDE.md has main as the base for hand-written PRs.
+on:
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 20 and v4 actions to match deploy.yml - a bump that passes here
+      # should be a bump that deploys. The github-actions entry in
+      # dependabot.yml is what keeps both moving together from now on.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Not `npm run build`: that begins with fetch-data, which shells out to
+      # `gh api` and would rewrite src/assets/apps.json. The point here is to
+      # check the code in the PR against the data already committed, without a
+      # network round-trip deciding whether the run is green. deploy.yml still
+      # fetches for real.
+      #
+      # Note vue-tsc only covers src/ and vite.config.ts - the tsconfig
+      # includes say so - so e2e/ is type-checked by nothing. Playwright strips
+      # its types without reading them. A broken @types/* bump would go green
+      # here and fail in the e2e job below, which is at least the same run.
+      - name: Type check and build
+        run: npx vue-tsc -b && npx vite build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # chromium alone: playwright.config.ts declares no projects, so that is
+      # the only browser the suite ever runs in.
+      - run: npx playwright install --with-deps chromium
+
+      # The config's webServer block starts `npm run dev` and waits for it, and
+      # reuseExistingServer is off under CI, so there is no server to start or
+      # tear down here. The suite asserts the rendered cards against the
+      # committed apps.json, which is why fetch-data stays out of this job too.
+      - run: npm run test:e2e
