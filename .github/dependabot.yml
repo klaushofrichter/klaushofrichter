@@ -6,9 +6,9 @@ version: 2
 #
 # Dependabot opens its PRs against develop, the default branch, and a push to
 # develop is what deploy.yml publishes to Pages - so merging one of these is a
-# deploy. There is no workflow on pull_request in this repo yet, which means
-# these bumps are unchecked until they are already live; the e2e suite under
-# e2e/ is the obvious thing to hang on a PR trigger to close that.
+# deploy. ci.yml now runs the build and the e2e suite on every PR, and develop
+# is branch-protected on those two checks, so a bump can no longer reach the
+# live site without having passed them first.
 updates:
   # Application dependencies.
   - package-ecosystem: npm
