@@ -12,7 +12,7 @@
     "deploy": "npm run fetch-data && git add -A && git commit -m 'deploy' && git push origin develop"
   },
   "dependencies": {
-    "vue": "^3.5.25"
+    "vue": "^3.5.42"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
