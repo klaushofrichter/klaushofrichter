@@ -9,7 +9,7 @@
     "build": "npm run fetch-data && vue-tsc -b && vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",
-    "deploy": "npm run fetch-data && git add -A && git commit -m 'deploy' && git push origin develop"
+    "deploy": "bash scripts/deploy-pr.sh"
   },
   "dependencies": {
     "vue": "^3.5.42"
