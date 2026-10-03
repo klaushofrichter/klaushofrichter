@@ -5,7 +5,6 @@ defineProps<{
   user: UserProfile
   appCount: number
   showDetails: boolean
-  darkMode: boolean
 }>()
 
 const emit = defineEmits<{
@@ -95,19 +94,6 @@ const emit = defineEmits<{
   margin: 4px 0 0 0;
   font-size: 0.875rem;
   color: var(--color-text-muted);
-}
-
-.stats a {
-  color: var(--color-link);
-  text-decoration: none;
-}
-
-.stats a:hover {
-  text-decoration: underline;
-}
-
-.separator {
-  margin: 0 6px;
 }
 
 .details-toggle {

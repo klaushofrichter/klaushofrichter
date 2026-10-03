@@ -1,40 +1,37 @@
-import { execSync } from 'node:child_process'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
 import { writeFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const OUTPUT_PATH = join(__dirname, '..', 'src', 'assets', 'apps.json')
+const OUTPUT_PATH = new URL('../src/assets/apps.json', import.meta.url)
 const USERNAME = 'klaushofrichter'
+const RAW = ['--header', 'Accept: application/vnd.github.raw+json']
 
-function gh(endpoint) {
-  const result = execSync(`gh api '${endpoint}' 2>/dev/null`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
-  return JSON.parse(result)
-}
+const run = promisify(execFile)
 
-function ghRaw(endpoint, extraArgs = '') {
+// Raw response body, or null if the call fails (e.g. a 404 for a missing file).
+async function ghRaw(endpoint, extraArgs = []) {
   try {
-    return execSync(`gh api '${endpoint}' ${extraArgs} 2>/dev/null`, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 })
+    const { stdout } = await run('gh', ['api', endpoint, ...extraArgs], { maxBuffer: 10 * 1024 * 1024 })
+    return stdout
   } catch {
     return null
   }
 }
 
-function extractSummaryFromReadme(readmeContent, repoDescription) {
-  if (!readmeContent) {
-    return repoDescription || 'No description available'
-  }
+// Parsed JSON; a failure here is fatal, unlike ghRaw.
+async function gh(endpoint, extraArgs = []) {
+  const body = await ghRaw(endpoint, extraArgs)
+  if (body === null) throw new Error(`gh api ${endpoint} failed`)
+  return JSON.parse(body)
+}
 
-  const lines = readmeContent.split('\n')
+function extractSummaryFromReadme(readmeContent, repoDescription) {
   const proseLines = []
 
-  for (const line of lines) {
+  for (const line of (readmeContent ?? '').split('\n')) {
     const trimmed = line.trim()
     // Skip headings
     if (trimmed.startsWith('#')) continue
-    // Skip badges (lines that are only images/links with no prose)
-    if (/^\[!\[.*\]\(.*\)\]\(.*\)$/.test(trimmed)) continue
-    if (/^!\[.*\]\(.*\)$/.test(trimmed)) continue
     // Skip empty lines
     if (trimmed === '') {
       if (proseLines.length > 0) break // End of first paragraph
@@ -42,8 +39,8 @@ function extractSummaryFromReadme(readmeContent, repoDescription) {
     }
     // Skip HTML tags
     if (/^<.*>$/.test(trimmed)) continue
-    // Skip lines that are only links
-    if (/^\[.*\]\(.*\)$/.test(trimmed)) continue
+    // Skip lines that are only a link, an image, or a badge (a linked image)
+    if (/^!?\[.*\]\(.*\)$/.test(trimmed)) continue
 
     proseLines.push(trimmed)
   }
@@ -52,9 +49,9 @@ function extractSummaryFromReadme(readmeContent, repoDescription) {
     return repoDescription || 'No description available'
   }
 
-  const paragraph = proseLines.join(' ')
   // Strip remaining markdown: bold, italic, inline code, links
-  const cleaned = paragraph
+  const cleaned = proseLines
+    .join(' ')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // [text](url) -> text
     .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1') // bold/italic
     .replace(/`([^`]+)`/g, '$1') // inline code
@@ -66,84 +63,64 @@ function extractSummaryFromReadme(readmeContent, repoDescription) {
   return cleaned
 }
 
+function parseVersion(pkgJson) {
+  try {
+    return JSON.parse(pkgJson).version || null
+  } catch {
+    return null
+  }
+}
+
+// One repo's entry, or null if it opts out with a .nobrowse file. The three
+// lookups are independent, so they run together.
+async function buildEntry(repo) {
+  const base = `/repos/${USERNAME}/${repo.name}`
+  const [nobrowse, pkgJson, readme] = await Promise.all([
+    ghRaw(`${base}/contents/.nobrowse`),
+    ghRaw(`${base}/contents/package.json`, RAW),
+    ghRaw(`${base}/readme`, RAW),
+  ])
+
+  if (nobrowse !== null) {
+    console.log(`  ${repo.name}: skipped (has .nobrowse)`)
+    return null
+  }
+  console.log(`  ${repo.name}`)
+
+  return {
+    name: repo.name,
+    pagesUrl: `https://${USERNAME}.github.io/${repo.name}/`,
+    repoUrl: repo.html_url,
+    lastUpdated: repo.pushed_at,
+    version: pkgJson === null ? null : parseVersion(pkgJson),
+    summary: extractSummaryFromReadme(readme, repo.description),
+  }
+}
+
 async function main() {
-  console.log('Fetching user profile...')
-  const rawUser = gh(`/users/${USERNAME}`)
+  console.log('Fetching user profile and repositories...')
+  const [rawUser, pages] = await Promise.all([
+    gh(`/users/${USERNAME}`),
+    gh(`/users/${USERNAME}/repos?per_page=100`, ['--paginate', '--slurp']),
+  ])
   const user = {
     login: rawUser.login,
     name: rawUser.name,
     avatarUrl: rawUser.avatar_url,
     htmlUrl: rawUser.html_url,
     bio: rawUser.bio,
-    blog: rawUser.html_url,
-    publicRepos: rawUser.public_repos,
   }
 
-  console.log('Fetching repositories with GitHub Pages...')
-  // Fetch all repos (paginated)
-  let page = 1
-  let allRepos = []
-  while (true) {
-    const repos = gh(`/users/${USERNAME}/repos?per_page=100&page=${page}`)
-    if (repos.length === 0) break
-    allRepos = allRepos.concat(repos)
-    page++
-  }
-
-  const pagesRepos = allRepos.filter((r) => r.has_pages)
+  const pagesRepos = pages.flat().filter((r) => r.has_pages)
   console.log(`Found ${pagesRepos.length} repos with GitHub Pages`)
 
-  const apps = []
-  for (const repo of pagesRepos) {
-    console.log(`  Processing ${repo.name}...`)
+  const apps = (await Promise.all(pagesRepos.map(buildEntry))).filter(Boolean)
 
-    // Skip repos with .nobrowse file
-    const nobrowse = ghRaw(`/repos/${USERNAME}/${repo.name}/contents/.nobrowse`)
-    if (nobrowse !== null) {
-      console.log(`    Skipped (has .nobrowse)`)
-      continue
-    }
+  // pushed_at is ISO 8601 UTC, which sorts correctly as text
+  apps.sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated))
 
-    // Fetch version from package.json
-    let version = null
-    try {
-      const pkgContent = gh(`/repos/${USERNAME}/${repo.name}/contents/package.json`)
-      if (pkgContent.content) {
-        const decoded = Buffer.from(pkgContent.content, 'base64').toString('utf-8')
-        const pkg = JSON.parse(decoded)
-        version = pkg.version || null
-      }
-    } catch {
-      // No package.json
-    }
-
-    // Fetch README for summary
-    let summary = repo.description || 'No description available'
-    try {
-      const readmeRaw = ghRaw(`/repos/${USERNAME}/${repo.name}/readme`, '--header "Accept: application/vnd.github.raw+json"')
-      if (readmeRaw) {
-        summary = extractSummaryFromReadme(readmeRaw, repo.description)
-      }
-    } catch {
-      // No README
-    }
-
-    apps.push({
-      name: repo.name,
-      pagesUrl: `https://${USERNAME}.github.io/${repo.name}/`,
-      repoUrl: repo.html_url,
-      lastUpdated: repo.pushed_at,
-      version,
-      summary,
-    })
-  }
-
-  // Sort by lastUpdated descending
-  apps.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
-
-  const data = { user, apps }
-  writeFileSync(OUTPUT_PATH, JSON.stringify(data, null, 2))
-  console.log(`\nWritten ${apps.length} apps to ${OUTPUT_PATH}`)
+  writeFileSync(OUTPUT_PATH, JSON.stringify({ user, apps }, null, 2))
+  console.log(`\nWritten ${apps.length} apps to ${OUTPUT_PATH.pathname}`)
 }
 
 main().catch((err) => {

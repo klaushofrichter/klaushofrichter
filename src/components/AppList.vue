@@ -6,15 +6,11 @@ defineProps<{
   apps: AppEntry[]
   showDetails: boolean
 }>()
-
-const emit = defineEmits<{
-  'show-lightbox': [app: AppEntry]
-}>()
 </script>
 
 <template>
   <section class="app-list">
-    <AppCard v-for="app in apps" :key="app.name" :app="app" :show-details="showDetails" @show-lightbox="emit('show-lightbox', $event)" />
+    <AppCard v-for="app in apps" :key="app.name" :app="app" :show-details="showDetails" />
   </section>
 </template>
 

@@ -4,8 +4,6 @@ export interface UserProfile {
   avatarUrl: string
   htmlUrl: string
   bio: string | null
-  blog: string
-  publicRepos: number
 }
 
 export interface AppEntry {

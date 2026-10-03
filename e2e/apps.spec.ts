@@ -34,19 +34,10 @@ test.describe('Pages Browser', () => {
 
   test('version shown when available', async ({ page }) => {
     const cards = page.locator('.app-card')
-    const appsWithVersion = appsData.apps.filter((a) => a.version !== null)
-    const appsWithoutVersion = appsData.apps.filter((a) => a.version === null)
 
-    // Cards with version should show badge
-    for (const app of appsWithVersion) {
+    for (const app of appsData.apps) {
       const card = cards.filter({ hasText: app.name }).first()
-      await expect(card.locator('.version-badge')).toBeVisible()
-    }
-
-    // Cards without version should not show badge
-    for (const app of appsWithoutVersion) {
-      const card = cards.filter({ hasText: app.name }).first()
-      await expect(card.locator('.version-badge')).toHaveCount(0)
+      await expect(card.locator('.version-badge')).toHaveCount(app.version === null ? 0 : 1)
     }
   })
 
