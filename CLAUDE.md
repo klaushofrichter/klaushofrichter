@@ -24,17 +24,17 @@ There is no linter or formatter. The strict `tsconfig` flags (`noUnusedLocals`, 
 
 ## Architecture
 
-**Build-time data pipeline:** `scripts/fetch-apps.mjs` uses `gh api` to enumerate all public repos with GitHub Pages, skips repos containing a `.nobrowse` file, extracts summaries from READMEs (first prose paragraph, markdown stripped, capped at 50 words), versions from `package.json`, sorts by `pushed_at` descending, and writes everything to `src/assets/apps.json`. This JSON is imported statically by the Vue app — there are no runtime API calls.
+**Build-time data pipeline:** `scripts/fetch-apps.mjs` uses `gh api` to enumerate all public repos with GitHub Pages, skips repos containing a `.nobrowse` file, extracts summaries from READMEs (first prose paragraph, markdown stripped, capped at 50 words), versions from `package.json`, sorts by `pushed_at` descending, and writes everything to `src/assets/apps.json`. The per-repo lookups run concurrently (about 1 s total, versus about 10 s sequentially). This JSON is imported statically by the Vue app — there are no runtime API calls.
 
 **Vue component tree:**
-- `App.vue` — root; manages dark mode and show-details toggles (persisted to localStorage), lightbox overlay for card detail view
+- `App.vue` — root; owns the dark-mode and show-details toggles (persisted to localStorage)
 - `AppHeader.vue` — user profile display with avatar, name, app count, and toggle controls
 - `AppList.vue` — responsive CSS grid container
-- `AppCard.vue` — individual card with name, summary, version badge, relative date, links to Pages site and repo
+- `AppCard.vue` — individual card with name, summary, version badge, relative date, links to Pages site and repo. With details off, a click opens the card's own lightbox (teleported to `<body>`) instead of the app
 
-**Types:** `src/types/app.ts` defines `UserProfile`, `AppEntry`, and `AppsData` interfaces used across components.
+**Types:** `src/types/app.ts` defines `UserProfile`, `AppEntry`, and `AppsData`. `App.vue` assigns the imported JSON to an `AppsData`-annotated const (not an `as` cast), so `vue-tsc` fails if `fetch-apps.mjs` drifts from the interface — and deploy.yml type-checks *after* fetching, so live data is checked too. Keep it an annotation.
 
-**Styling:** `src/style.css` uses CSS custom properties for theming (light/dark via `.dark` class on `<html>`). Responsive grid breakpoints: 1 column mobile, 2 tablet, 3 desktop.
+**Styling:** `src/style.css` uses CSS custom properties for theming (light/dark via `.dark` class on `<html>`). The initial `.dark` class is set by an inline script in `index.html` before first paint, so a saved dark theme doesn't flash light; `App.vue` only follows toggles. Responsive grid breakpoints: 1 column mobile, 2 tablet, 3 desktop.
 
 ## Branching and Deployment
 
@@ -53,6 +53,5 @@ There is no linter or formatter. The strict `tsconfig` flags (`noUnusedLocals`, 
 - `e2e/apps.spec.ts` imports `apps.json` directly and asserts on CSS class selectors (`.app-card`, `.summary`, `.version-badge`, `.repo-link`, `.app-list`, `h2 a`) plus `data-testid="date"`. Renaming any of those classes breaks the tests even though nothing visual changed.
 - `e2e/` is type-checked by nothing — `tsconfig.app.json` includes only `src/`, `tsconfig.node.json` only `vite.config.ts`, and Playwright strips types without checking them. Type errors in tests surface only as runtime failures.
 - Playwright declares no `projects`, so the suite only ever runs in Chromium.
-- `relativeDate()` is duplicated in `App.vue` and `AppCard.vue` — change both or neither.
 - The `.nobrowse` file in the repo root prevents *this* repo from appearing in its own app listing.
 - No runtime dependencies beyond Vue 3. No router, no state management library.

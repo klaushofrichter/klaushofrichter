@@ -1,39 +1,22 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { AppEntry } from '../types/app'
+import { relativeDate } from '../utils/date'
 
-const props = defineProps<{
+defineProps<{
   app: AppEntry
   showDetails: boolean
 }>()
 
-const emit = defineEmits<{
-  'show-lightbox': [app: AppEntry]
-}>()
+const lightboxOpen = ref(false)
 
 function openApp(url: string) {
   window.open(url, '_blank')
 }
-
-function relativeDate(dateStr: string): string {
-  const now = new Date()
-  const date = new Date(dateStr)
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-
-  if (diffDays === 0) return 'today'
-  if (diffDays === 1) return 'yesterday'
-  if (diffDays < 30) return `${diffDays} days ago`
-  const diffMonths = Math.floor(diffDays / 30)
-  if (diffMonths === 1) return '1 month ago'
-  if (diffMonths < 12) return `${diffMonths} months ago`
-  const diffYears = Math.floor(diffDays / 365)
-  if (diffYears === 1) return '1 year ago'
-  return `${diffYears} years ago`
-}
 </script>
 
 <template>
-  <article class="app-card" @click="showDetails ? openApp(app.pagesUrl) : emit('show-lightbox', app)">
+  <article class="app-card" @click="showDetails ? openApp(app.pagesUrl) : (lightboxOpen = true)">
     <div class="card-content">
       <div class="card-header">
         <h2>
@@ -53,6 +36,24 @@ function relativeDate(dateStr: string): string {
       </div>
     </div>
   </article>
+
+  <Teleport to="body">
+    <div v-if="lightboxOpen" class="lightbox-backdrop" @click="lightboxOpen = false">
+      <div class="lightbox-card" @click.stop>
+        <button class="lightbox-close" @click="lightboxOpen = false">&times;</button>
+        <div class="lightbox-header">
+          <h2>{{ app.name }}</h2>
+          <span v-if="app.version" class="version-badge">v{{ app.version }}</span>
+        </div>
+        <p class="lightbox-summary">{{ app.summary }}</p>
+        <p class="lightbox-date">Updated {{ relativeDate(app.lastUpdated) }}</p>
+        <div class="lightbox-links">
+          <a :href="app.pagesUrl" target="_blank" rel="noopener" class="lightbox-link">Open App</a>
+          <a :href="app.repoUrl" target="_blank" rel="noopener" class="lightbox-link lightbox-link--secondary">View Repo</a>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -118,10 +119,6 @@ function relativeDate(dateStr: string): string {
   color: var(--color-text-muted);
 }
 
-.date {
-  color: var(--color-text-muted);
-}
-
 .repo-link {
   display: inline-flex;
   align-items: center;
@@ -132,5 +129,96 @@ function relativeDate(dateStr: string): string {
 
 .repo-link:hover {
   color: var(--color-link);
+}
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.lightbox-card {
+  position: relative;
+  background: var(--color-card);
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.lightbox-close:hover {
+  color: var(--color-text);
+}
+
+.lightbox-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lightbox-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.lightbox-summary {
+  margin: 0 0 12px 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.lightbox-date {
+  margin: 0 0 16px 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.lightbox-links {
+  display: flex;
+  gap: 10px;
+}
+
+.lightbox-link {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  background: var(--color-link);
+  color: #fff;
+}
+
+.lightbox-link:hover {
+  opacity: 0.9;
+}
+
+.lightbox-link--secondary {
+  background: transparent;
+  color: var(--color-link);
+  border: 1px solid var(--color-border);
+}
+
+.lightbox-link--secondary:hover {
+  background: var(--color-badge-bg);
+  opacity: 1;
 }
 </style>
