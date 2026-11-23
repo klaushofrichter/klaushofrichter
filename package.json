@@ -12,7 +12,7 @@
     "deploy": "bash scripts/deploy-pr.sh"
   },
   "dependencies": {
-    "vue": "^3.5.45"
+    "vue": "^3.5.46"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",
